@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบล็อกอินพนักงาน | TOKAI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 450px;
+            overflow: hidden;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .header img {
+            max-width: 150px;
+            margin-bottom: 20px;
+            filter: brightness(0) invert(1);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .form-container {
+            padding: 40px 30px;
+            background: white;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 42px;
+            color: #999;
+            font-size: 18px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-group input.error {
+            border-color: #f44336;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .login-btn i {
+            font-size: 20px;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .message.error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #c62828;
+            display: flex;
+        }
+
+        .message.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #2e7d32;
+            display: flex;
+        }
+
+        .message.info {
+            background: #e3f2fd;
+            color: #1565c0;
+            border-left: 4px solid #1565c0;
+            display: flex;
+        }
+
+        .message.warning {
+            background: #fff3e0;
+            color: #ef6c00;
+            border-left: 4px solid #ef6c00;
+            display: flex;
+        }
+
+        .help-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .help-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.3s ease;
+        }
+
+        .help-link a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #e0e0e0;
+            color: #666;
+            font-size: 13px;
+        }
+
+        .footer i {
+            color: #667eea;
+            margin: 0 5px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .form-container {
+                padding: 30px 20px;
+            }
+            
+            .input-group input {
+                padding: 12px 12px 12px 40px;
+                font-size: 14px;
+            }
+        }
+
+        /* Password visibility toggle */
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 42px;
+            color: #999;
+            cursor: pointer;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="header">
+            <img src="https://sarawutc6689-cpu.github.io/Mouldmate-Login/logotokai.png" alt="TOKAI Logo">
+            <h1>ระบบล็อกอินพนักงาน</h1>
+            <p>เฉพาะพนักงาน TOKAISOLIDTIRE ที่ลงทะเบียนเท่านั้น</p>
+        </div>
+
+        <div class="form-container">
+            <!-- แสดงข้อความแจ้งเตือน -->
+            <div id="message" class="message">
+                <i class="fas fa-info-circle"></i>
+                <span id="messageText"></span>
+            </div>
+
+            <form id="loginForm" onsubmit="return false;">
+                <div class="input-group">
+                    <label for="username">
+                        <i class="fas fa-id-card"></i> รหัสพนักงาน
+                    </label>
+                    <i class="fas fa-user"></i>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
+                        placeholder="กรุณากรอกรหัสพนักงาน" 
+                        autocomplete="off"
+                        required
+                    >
+                </div>
+
+                <div class="input-group">
+                    <label for="password">
+                        <i class="fas fa-calendar-day"></i> วันที่เริ่มงาน
+                    </label>
+                    <i class="fas fa-calendar-alt"></i>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        placeholder="กรุณากรอกวันที่เริ่มงาน (DDMMYYYY)" 
+                        autocomplete="off"
+                        required
+                    >
+                    <i class="fas fa-eye password-toggle" id="togglePassword" onclick="togglePasswordVisibility()"></i>
+                </div>
+
+                <button type="button" class="login-btn" id="loginBtn" onclick="handleLogin()">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>เข้าสู่ระบบ</span>
+                </button>
+
+                <div class="help-link">
+                    <a href="#" onclick="showHelp(event)">
+                        <i class="fas fa-question-circle"></i>
+                        ขอความช่วยเหลือ / ลืมรหัสผ่าน
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <div class="footer">
+            <i class="fas fa-shield-alt"></i>
+            ระบบรักษาความปลอดภัย © 2026 | พัฒนาโดย Sarawut.C
+            <i class="fas fa-shield-alt"></i>
+        </div>
+    </div>
+
+    <script>
+        // กำหนดค่าคงที่
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz5BQusAtHdooGlsv2lNfKql-0VFfwLvFHrmmPRI8VwRefqO-S9fZpykKkAjY30Nxy2/exec';
+        const DASHBOARD_URL = 'Approve_IT.html';
+        
+        // สถานะการทำงาน
+        let isLoggingIn = false;
+
+        // แสดง/ซ่อนรหัสผ่าน
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('togglePassword');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+
+        // แสดงข้อความช่วยเหลือ
+        function showHelp(event) {
+            event.preventDefault();
+            showMessage('info', '📋 ข้อมูลการเข้าสู่ระบบ:\n\n1. รหัสพนักงาน: กรอกรหัสพนักงาน 6 หลัก\n2. วันที่เริ่มงาน: กรอก DDMMYYYY (เช่น 01012023)\n3. หากมีปัญหา กรุณาติดต่อฝ่ายทรัพยากรบุคคล');
+        }
+
+        // แสดงข้อความ
+        function showMessage(type, text) {
+            const messageDiv = document.getElementById('message');
+            const messageText = document.getElementById('messageText');
+            
+            messageDiv.className = `message ${type}`;
+            messageText.textContent = text;
+            
+            // auto hide after 5 seconds for success messages
+            if (type === 'success') {
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // ซ่อนข้อความ
+        function hideMessage() {
+            const messageDiv = document.getElementById('message');
+            messageDiv.style.display = 'none';
+        }
+
+        // ตรวจสอบความถูกต้องของข้อมูล
+        function validateInputs(username, password) {
+            if (!username || !password) {
+                showMessage('error', 'กรุณากรอกข้อมูลให้ครบทุกช่อง');
+                return false;
+            }
+
+            // ตรวจสอบรหัสพนักงาน (ตัวเลขเท่านั้น)
+            if (!/^\d+$/.test(username)) {
+                showMessage('error', 'รหัสพนักงานต้องเป็นตัวเลขเท่านั้น');
+                document.getElementById('username').classList.add('error');
+                setTimeout(() => {
+                    document.getElementById('username').classList.remove('error');
+                }, 500);
+                return false;
+            }
+
+            // ตรวจสอบรูปแบบวันที่ (DDMMYYYY)
+            if (!/^\d{8}$/.test(password)) {
+                showMessage('error', 'วันที่เริ่มงานต้องเป็นตัวเลข 8 หลัก (DDMMYYYY)');
+                document.getElementById('password').classList.add('error');
+                setTimeout(() => {
+                    document.getElementById('password').classList.remove('error');
+                }, 500);
+                return false;
+            }
+
+            // ตรวจสอบความถูกต้องของวันที่
+            const day = parseInt(password.substring(0, 2));
+            const month = parseInt(password.substring(2, 4));
+            const year = parseInt(password.substring(4, 8));
+
+            if (day < 1 || day > 31 || month < 1 || month > 12 || year < 1900 || year > 2100) {
+                showMessage('error', 'วันที่เริ่มงานไม่ถูกต้อง (กรุณาตรวจสอบ DDMMYYYY)');
+                document.getElementById('password').classList.add('error');
+                setTimeout(() => {
+                    document.getElementById('password').classList.remove('error');
+                }, 500);
+                return false;
+            }
+
+            return true;
+        }
+
+        // ฟังก์ชันหลักสำหรับ login
+        async function handleLogin() {
+            if (isLoggingIn) return;
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const loginBtn = document.getElementById('loginBtn');
+
+            // ตรวจสอบความถูกต้อง
+            if (!validateInputs(username, password)) {
+                return;
+            }
+
+            try {
+                isLoggingIn = true;
+                
+                // เปลี่ยนสถานะปุ่ม
+                loginBtn.disabled = true;
+                loginBtn.innerHTML = `
+                    <div class="loading-spinner"></div>
+                    <span>กำลังตรวจสอบ...</span>
+                `;
+
+                showMessage('info', 'กำลังตรวจสอบข้อมูล กรุณารอสักครู่...');
+
+                // สร้าง FormData สำหรับส่ง
+                const formData = new URLSearchParams();
+                formData.append('uname', username);
+                formData.append('pass', password);
+                formData.append('action', 'login');
+
+                // เรียก API
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formData.toString()
+                });
+
+                // อ่าน response
+                const responseText = await response.text();
+                console.log('Response:', responseText);
+
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                } catch (e) {
+                    console.error('JSON Parse Error:', e);
+                    throw new Error('การตอบกลับจากเซิร์ฟเวอร์ไม่ถูกต้อง');
+                }
+
+                console.log('Login Response:', data);
+
+                // ตรวจสอบผลลัพธ์
+                if (data.status === 'success' && data.userStatus === 'Online') {
+                    showMessage('success', '🎉 ล็อกอินสำเร็จ! กำลังนำท่านเข้าสู่ระบบ...');
+                    
+                    // บันทึกข้อมูลลง localStorage
+                    localStorage.setItem('username', username);
+                    localStorage.setItem('authToken', username);
+                    localStorage.setItem('loginTime', Date.now().toString());
+                    localStorage.setItem('expireTime', (Date.now() + 30 * 60 * 1000).toString()); // 30 นาที
+
+                    // เปลี่ยนปุ่มเป็นสำเร็จ
+                    loginBtn.innerHTML = `
+                        <i class="fas fa-check-circle"></i>
+                        <span>สำเร็จ!</span>
+                    `;
+                    loginBtn.style.background = 'linear-gradient(135deg, #4CAF50 0%, #45a049 100%)';
+
+                    // เปลี่ยนหน้า
+                    setTimeout(() => {
+                        window.location.href = DASHBOARD_URL;
+                    }, 1500);
+
+                } else if (data.status === 'denied') {
+                    showMessage('error', data.message || 'บัญชีนี้ถูกปฏิเสธการเข้าใช้งาน');
+                    resetLoginButton();
+                } else {
+                    showMessage('error', 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
+                    resetLoginButton();
+                }
+
+            } catch (error) {
+                console.error('Login Error:', error);
+                
+                // แสดงข้อความ error
+                if (error.message.includes('Failed to fetch')) {
+                    showMessage('error', '⚠️ ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ กรุณาลองใหม่อีกครั้ง');
+                } else {
+                    showMessage('error', `⚠️ เกิดข้อผิดพลาด: ${error.message}`);
+                }
+                
+                resetLoginButton();
+            } finally {
+                isLoggingIn = false;
+            }
+        }
+
+        // รีเซ็ตปุ่ม login
+        function resetLoginButton() {
+            const loginBtn = document.getElementById('loginBtn');
+            loginBtn.disabled = false;
+            loginBtn.innerHTML = `
+                <i class="fas fa-sign-in-alt"></i>
+                <span>เข้าสู่ระบบ</span>
+            `;
+            loginBtn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+        }
+
+        // รองรับการกด Enter
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('password');
+            
+            passwordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleLogin();
+                }
+            });
+
+            // เคลียร์ error class เมื่อพิมพ์
+            document.getElementById('username').addEventListener('input', function() {
+                this.classList.remove('error');
+                hideMessage();
+            });
+
+            document.getElementById('password').addEventListener('input', function() {
+                this.classList.remove('error');
+                hideMessage();
+            });
+
+            // ตรวจสอบ session เดิม
+            const savedUsername = localStorage.getItem('username');
+            if (savedUsername) {
+                document.getElementById('username').value = savedUsername;
+                document.getElementById('password').focus();
+            }
+        });
+    </script>
+</body>
+</html>
