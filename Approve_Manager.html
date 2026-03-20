@@ -1,1 +1,338 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tokaisolidtire · กำลังโหลด</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at 30% 10%, #1a0c0c 0%, #0b0404 100%);
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* อนุภาคเคลื่อนไหวในพื้นหลัง */
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(220, 38, 38, 0.2);
+      border-radius: 50%;
+      box-shadow: 0 0 10px #dc2626;
+      animation: float 12s infinite ease-in-out;
+    }
+
+    .particle:nth-child(1) { top: 20%; left: 15%; animation-duration: 14s; }
+    .particle:nth-child(2) { top: 70%; left: 80%; width: 6px; height: 6px; background: rgba(239, 68, 68, 0.15); animation-duration: 18s; }
+    .particle:nth-child(3) { top: 85%; left: 30%; animation-duration: 16s; }
+    .particle:nth-child(4) { top: 45%; left: 90%; width: 8px; height: 8px; background: rgba(185, 28, 28, 0.1); animation-duration: 20s; }
+    .particle:nth-child(5) { top: 10%; left: 70%; animation-duration: 15s; }
+
+    @keyframes float {
+      0% { transform: translateY(0) translateX(0); opacity: 0.3; }
+      50% { transform: translateY(-30px) translateX(20px); opacity: 0.8; }
+      100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+    }
+
+    /* การ์ดหลัก */
+    .card {
+      background: rgba(10, 4, 4, 0.7);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(220, 38, 38, 0.25);
+      border-radius: 48px;
+      padding: 3rem 4rem;
+      max-width: 600px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 25px 50px -8px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(220, 38, 38, 0.2) inset, 0 0 30px rgba(220, 38, 38, 0.3);
+      animation: cardGlow 4s infinite alternate;
+      z-index: 10;
+    }
+
+    @keyframes cardGlow {
+      0% { box-shadow: 0 25px 50px -8px black, 0 0 0 1px rgba(220, 38, 38, 0.3) inset, 0 0 20px rgba(220, 38, 38, 0.3); }
+      100% { box-shadow: 0 30px 60px -5px black, 0 0 0 2px rgba(239, 68, 68, 0.5) inset, 0 0 45px #dc2626; }
+    }
+
+    /* โลโก้ / ไอคอน */
+    .logo-wrapper {
+      margin-bottom: 2rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    .pulse-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(220,38,38,0.6) 0%, transparent 70%);
+      animation: pulse 2s infinite;
+      z-index: -1;
+    }
+
+    .brand-icon {
+      width: 90px;
+      height: 90px;
+      background: linear-gradient(145deg, #2c0e0e, #160707);
+      border-radius: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      font-size: 3rem;
+      font-weight: 700;
+      color: #fecaca;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.8), 0 0 0 1px #b91c1c inset;
+      transform: rotate(10deg);
+      transition: transform 0.3s ease;
+    }
+
+    .brand-icon span {
+      transform: rotate(-10deg);
+      display: inline-block;
+      background: linear-gradient(135deg, #fecaca, #f87171);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.4; transform: translate(-50%, -50%) scale(0.8); }
+      70% { opacity: 0.1; transform: translate(-50%, -50%) scale(1.6); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(2); }
+    }
+
+    h2 {
+      font-size: 2.5rem;
+      font-weight: 500;
+      background: linear-gradient(to right, #fca5a5, #f87171);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: 1px;
+      margin-bottom: 0.75rem;
+      text-shadow: 0 0 15px rgba(220,38,38,0.5);
+    }
+
+    .sub {
+      font-size: 1.2rem;
+      color: #a7a7a7;
+      margin-bottom: 2.5rem;
+      border-bottom: 1px dashed rgba(220,38,38,0.4);
+      padding-bottom: 1.5rem;
+      font-weight: 300;
+    }
+
+    /* ตัวโหลดแบบเรดาร์/วงกลม */
+    .loader-container {
+      margin: 2rem 0;
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+
+    .radar-loader {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #2d0e0e, #120505);
+      box-shadow: 0 0 0 2px rgba(220,38,38,0.3), 0 10px 30px rgba(0,0,0,0.7);
+      position: relative;
+      animation: spin 2s infinite linear;
+    }
+
+    .radar-loader::before {
+      content: '';
+      position: absolute;
+      inset: 5px;
+      border-radius: 50%;
+      background: #1f0a0a;
+      box-shadow: inset 0 0 20px black;
+    }
+
+    .radar-loader::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 50%;
+      height: 2px;
+      background: linear-gradient(90deg, #ef4444, #b91c1c, transparent);
+      transform-origin: left;
+      transform: translateY(-50%) rotate(0deg);
+      animation: scan 1.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 15px #ef4444;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes scan {
+      0% { transform: translateY(-50%) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-50%) rotate(360deg); opacity: 0.6; }
+    }
+
+    /* ข้อความสถานะ */
+    .status-message {
+      font-size: 1rem;
+      color: #9f7b7b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .dot-flash {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #dc2626;
+      box-shadow: 0 0 15px #dc2626;
+      animation: flash 1s infinite alternate;
+    }
+
+    @keyframes flash {
+      0% { opacity: 0.2; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* เช็คพ้อยท์ตกแต่ง */
+    .glow-text {
+      color: #c08484;
+      font-size: 0.95rem;
+      margin-top: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+    }
+
+    .glow-text span {
+      width: 6px;
+      height: 6px;
+      background: #b91c1c;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .footer-note {
+      margin-top: 2.2rem;
+      font-size: 0.8rem;
+      color: #4c2626;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* responsive */
+    @media (max-width: 480px) {
+      .card {
+        padding: 2.5rem 1.8rem;
+        border-radius: 36px;
+      }
+      h2 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- อนุภาคลอย -->
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+
+  <div class="card">
+    <div class="logo-wrapper">
+      <div class="pulse-ring"></div>
+      <div class="brand-icon">
+        <span>M</span>
+      </div>
+    </div>
+    <h2>กำลังตรวจสอบ</h2>
+    <div class="sub">Tokaisolidtire</div>
+
+    <div class="loader-container">
+      <div class="radar-loader"></div>
+    </div>
+
+    <div class="status-message">
+      <div class="dot-flash"></div>
+      กรุณารอสักครู่ ระบบกำลังนำท่านไปยังหน้าหลัก
+      <div class="dot-flash"></div>
+    </div>
+
+    <div class="glow-text">
+      <span></span> Secure Connection <span></span>
+    </div>
+    <div class="footer-note">Tokaisolidtire · IT Security</div>
+  </div>
+
+  <script>
+    (function() {
+      // **** กำหนดค่าต่าง ๆ (เหมือนเดิม) ****
+      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzkGBuR8WiDzRmbaXP2c9ypzxsIg0SZEu7AmVV7jllhsszG9oua1NkWkqL93WaR9lw/exec";
+      const LOGIN_URL = "Login_Manager.html";
+      const TARGET_URL = "https://script.google.com/macros/s/AKfycbxBFFiPMmSLLpsgf9mRNsB7ie9d98-cMLqG3VAW5K20-CjQXZSTK9txikzcoVwwnVnp/exec?page=approve";
+
+      // สร้างฟังก์ชัน redirect
+      function redirectToLogin() {
+        localStorage.clear();
+        window.location.replace(LOGIN_URL);
+      }
+
+      // ฟังก์ชันหลักตรวจสอบ
+      function checkAuth() {
+        const token = localStorage.getItem("authToken");
+        const expireTime = localStorage.getItem("expireTime");
+
+        if (!token || !expireTime || Date.now() > parseInt(expireTime, 10)) {
+          // ถ้า token หมดอายุหรือไม่มี ให้กระโดดไป login
+          redirectToLogin();
+          return;
+        }
+
+        // เรียก verify ผ่าน fetch
+        fetch(SCRIPT_URL + "?action=verify&token=" + encodeURIComponent(token))
+          .then(res => res.json())
+          .then(data => {
+            console.log("Verify response:", data);
+            if (data.valid) {
+              // ไปหน้าปลายทาง
+              window.location.replace(TARGET_URL);
+            } else {
+              redirectToLogin();
+            }
+          })
+          .catch(err => {
+            console.error("Verify error:", err);
+            redirectToLogin();
+          });
+      }
+
+      // เรียกทำงานเมื่อ DOM พร้อม
+      document.addEventListener("DOMContentLoaded", checkAuth);
+    })();
+  </script>
+</body>
+</html>
