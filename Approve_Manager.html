@@ -3,336 +3,327 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tokaisolidtire · กำลังโหลด</title>
+  <title>TOKAI · กำลังตรวจสอบ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Sarabun:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    :root {
+      --bg: #f5f4f0;
+      --surface: #ffffff;
+      --border: #e8e5df;
+      --text-primary: #1a1714;
+      --text-secondary: #7a7570;
+      --text-muted: #b0ada8;
+      --accent: #c8321a;
+      --accent-light: #f7ede9;
     }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
+      font-family: 'Sarabun', 'DM Sans', sans-serif;
+      background: var(--bg);
       min-height: 100vh;
-      background: radial-gradient(circle at 30% 10%, #1a0c0c 0%, #0b0404 100%);
-      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
-      overflow: hidden;
     }
 
-    /* อนุภาคเคลื่อนไหวในพื้นหลัง */
-    .particle {
-      position: absolute;
-      width: 4px;
-      height: 4px;
-      background: rgba(220, 38, 38, 0.2);
-      border-radius: 50%;
-      box-shadow: 0 0 10px #dc2626;
-      animation: float 12s infinite ease-in-out;
-    }
-
-    .particle:nth-child(1) { top: 20%; left: 15%; animation-duration: 14s; }
-    .particle:nth-child(2) { top: 70%; left: 80%; width: 6px; height: 6px; background: rgba(239, 68, 68, 0.15); animation-duration: 18s; }
-    .particle:nth-child(3) { top: 85%; left: 30%; animation-duration: 16s; }
-    .particle:nth-child(4) { top: 45%; left: 90%; width: 8px; height: 8px; background: rgba(185, 28, 28, 0.1); animation-duration: 20s; }
-    .particle:nth-child(5) { top: 10%; left: 70%; animation-duration: 15s; }
-
-    @keyframes float {
-      0% { transform: translateY(0) translateX(0); opacity: 0.3; }
-      50% { transform: translateY(-30px) translateX(20px); opacity: 0.8; }
-      100% { transform: translateY(0) translateX(0); opacity: 0.3; }
-    }
-
-    /* การ์ดหลัก */
     .card {
-      background: rgba(10, 4, 4, 0.7);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border: 1px solid rgba(220, 38, 38, 0.25);
-      border-radius: 48px;
-      padding: 3rem 4rem;
-      max-width: 600px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 52px 48px;
+      max-width: 420px;
       width: 90%;
       text-align: center;
-      box-shadow: 0 25px 50px -8px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(220, 38, 38, 0.2) inset, 0 0 30px rgba(220, 38, 38, 0.3);
-      animation: cardGlow 4s infinite alternate;
-      z-index: 10;
+      box-shadow: 0 4px 24px rgba(26,23,20,0.07);
+      animation: slideUp 0.4s cubic-bezier(0.4,0,0.2,1) both;
     }
 
-    @keyframes cardGlow {
-      0% { box-shadow: 0 25px 50px -8px black, 0 0 0 1px rgba(220, 38, 38, 0.3) inset, 0 0 20px rgba(220, 38, 38, 0.3); }
-      100% { box-shadow: 0 30px 60px -5px black, 0 0 0 2px rgba(239, 68, 68, 0.5) inset, 0 0 45px #dc2626; }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* โลโก้ / ไอคอน */
-    .logo-wrapper {
-      margin-bottom: 2rem;
-      position: relative;
-      display: inline-block;
-    }
-
-    .pulse-ring {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(220,38,38,0.6) 0%, transparent 70%);
-      animation: pulse 2s infinite;
-      z-index: -1;
-    }
-
-    .brand-icon {
-      width: 90px;
-      height: 90px;
-      background: linear-gradient(145deg, #2c0e0e, #160707);
-      border-radius: 32px;
-      display: flex;
+    .brand {
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      margin: 0 auto;
-      font-size: 3rem;
-      font-weight: 700;
-      color: #fecaca;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.8), 0 0 0 1px #b91c1c inset;
-      transform: rotate(10deg);
-      transition: transform 0.3s ease;
+      gap: 10px;
+      margin-bottom: 36px;
     }
 
-    .brand-icon span {
-      transform: rotate(-10deg);
-      display: inline-block;
-      background: linear-gradient(135deg, #fecaca, #f87171);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
+    .logo-mark {
+      width: 36px; height: 36px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600; font-size: 15px;
+      color: white;
     }
 
-    @keyframes pulse {
-      0% { opacity: 0.4; transform: translate(-50%, -50%) scale(0.8); }
-      70% { opacity: 0.1; transform: translate(-50%, -50%) scale(1.6); }
-      100% { opacity: 0; transform: translate(-50%, -50%) scale(2); }
-    }
-
-    h2 {
-      font-size: 2.5rem;
+    .brand-name {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
       font-weight: 500;
-      background: linear-gradient(to right, #fca5a5, #f87171);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      letter-spacing: 1px;
-      margin-bottom: 0.75rem;
-      text-shadow: 0 0 15px rgba(220,38,38,0.5);
-    }
-
-    .sub {
-      font-size: 1.2rem;
-      color: #a7a7a7;
-      margin-bottom: 2.5rem;
-      border-bottom: 1px dashed rgba(220,38,38,0.4);
-      padding-bottom: 1.5rem;
-      font-weight: 300;
-    }
-
-    /* ตัวโหลดแบบเรดาร์/วงกลม */
-    .loader-container {
-      margin: 2rem 0;
-      position: relative;
-      display: flex;
-      justify-content: center;
-    }
-
-    .radar-loader {
-      width: 90px;
-      height: 90px;
-      border-radius: 50%;
-      background: linear-gradient(145deg, #2d0e0e, #120505);
-      box-shadow: 0 0 0 2px rgba(220,38,38,0.3), 0 10px 30px rgba(0,0,0,0.7);
-      position: relative;
-      animation: spin 2s infinite linear;
-    }
-
-    .radar-loader::before {
-      content: '';
-      position: absolute;
-      inset: 5px;
-      border-radius: 50%;
-      background: #1f0a0a;
-      box-shadow: inset 0 0 20px black;
-    }
-
-    .radar-loader::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 50%;
-      height: 2px;
-      background: linear-gradient(90deg, #ef4444, #b91c1c, transparent);
-      transform-origin: left;
-      transform: translateY(-50%) rotate(0deg);
-      animation: scan 1.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 0 15px #ef4444;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    @keyframes scan {
-      0% { transform: translateY(-50%) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(-50%) rotate(360deg); opacity: 0.6; }
-    }
-
-    /* ข้อความสถานะ */
-    .status-message {
-      font-size: 1rem;
-      color: #9f7b7b;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      margin-top: 1.5rem;
-    }
-
-    .dot-flash {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background-color: #dc2626;
-      box-shadow: 0 0 15px #dc2626;
-      animation: flash 1s infinite alternate;
-    }
-
-    @keyframes flash {
-      0% { opacity: 0.2; transform: scale(0.8); }
-      100% { opacity: 1; transform: scale(1.2); }
-    }
-
-    /* เช็คพ้อยท์ตกแต่ง */
-    .glow-text {
-      color: #c08484;
-      font-size: 0.95rem;
-      margin-top: 1.2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.8rem;
-    }
-
-    .glow-text span {
-      width: 6px;
-      height: 6px;
-      background: #b91c1c;
-      border-radius: 50%;
-      display: inline-block;
-    }
-
-    .footer-note {
-      margin-top: 2.2rem;
-      font-size: 0.8rem;
-      color: #4c2626;
-      letter-spacing: 1px;
+      color: var(--text-secondary);
+      letter-spacing: 0.5px;
       text-transform: uppercase;
     }
 
-    /* responsive */
-    @media (max-width: 480px) {
-      .card {
-        padding: 2.5rem 1.8rem;
-        border-radius: 36px;
-      }
-      h2 {
-        font-size: 2rem;
-      }
+    /* Loader */
+    .loader-wrap {
+      margin: 0 auto 28px;
+      width: 64px; height: 64px;
+      position: relative;
+    }
+
+    .loader-ring {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      border: 2.5px solid var(--border);
+      border-top-color: var(--accent);
+      animation: spin 0.9s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loader-dot {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 8px; height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 0.9s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulse {
+      from { transform: translate(-50%,-50%) scale(0.7); opacity: 0.5; }
+      to   { transform: translate(-50%,-50%) scale(1);   opacity: 1; }
+    }
+
+    h2 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--text-primary);
+      letter-spacing: -0.3px;
+      margin-bottom: 8px;
+    }
+
+    .sub {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    /* Status steps */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 28px 0 0;
+      text-align: left;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--text-muted);
+      transition: color 0.3s;
+    }
+
+    .step.active { color: var(--text-secondary); }
+    .step.done   { color: var(--text-primary); }
+
+    .step-indicator {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 10px;
+      transition: all 0.3s;
+    }
+
+    .step.active .step-indicator {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+
+    .step.done .step-indicator {
+      border-color: #2d7a4f;
+      background: #edf7f2;
+      color: #2d7a4f;
+    }
+
+    /* Error state */
+    .error-icon {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: #fdf0ed;
+      border: 2px solid rgba(200,50,26,0.15);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 28px;
+    }
+
+    .error-icon svg { width: 28px; height: 28px; color: var(--accent); stroke-width: 2; }
+
+    .retry-btn {
+      margin-top: 20px;
+      padding: 11px 28px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Sarabun', sans-serif;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .retry-btn:hover { background: #a82815; }
+
+    .footer-note {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
     }
   </style>
 </head>
 <body>
-  <!-- อนุภาคลอย -->
-  <div class="particle"></div>
-  <div class="particle"></div>
-  <div class="particle"></div>
-  <div class="particle"></div>
-  <div class="particle"></div>
+  <div class="card" id="mainCard">
+    <div class="brand">
+      <div class="logo-mark">T</div>
+      <div class="brand-name">Tokaisolidtire</div>
+    </div>
 
-  <div class="card">
-    <div class="logo-wrapper">
-      <div class="pulse-ring"></div>
-      <div class="brand-icon">
-        <span>M</span>
+    <!-- LOADING STATE (default) -->
+    <div id="stateLoading">
+      <div class="loader-wrap">
+        <div class="loader-ring"></div>
+        <div class="loader-dot"></div>
+      </div>
+      <h2>กำลังตรวจสอบสิทธิ์</h2>
+      <p class="sub">กรุณารอสักครู่<br>ระบบกำลังยืนยันตัวตนของคุณ</p>
+
+      <div class="steps">
+        <div class="step done" id="step1">
+          <div class="step-indicator">✓</div>
+          <span>พบ Session Token</span>
+        </div>
+        <div class="step active" id="step2">
+          <div class="step-indicator">
+            <svg width="10" height="10" viewBox="0 0 10 10">
+              <circle cx="5" cy="5" r="3" fill="currentColor" opacity="0.5">
+                <animate attributeName="r" values="2;4;2" dur="1s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="1;0.2;1" dur="1s" repeatCount="indefinite"/>
+              </circle>
+            </svg>
+          </div>
+          <span>ยืนยัน Token กับเซิร์ฟเวอร์</span>
+        </div>
+        <div class="step" id="step3">
+          <div class="step-indicator"></div>
+          <span>นำทางไปหน้าหลัก</span>
+        </div>
       </div>
     </div>
-    <h2>กำลังตรวจสอบ</h2>
-    <div class="sub">Tokaisolidtire</div>
 
-    <div class="loader-container">
-      <div class="radar-loader"></div>
+    <!-- ERROR STATE (hidden) -->
+    <div id="stateError" style="display:none">
+      <div class="error-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"/>
+        </svg>
+      </div>
+      <h2>Session หมดอายุ</h2>
+      <p class="sub" id="errMsg">ไม่พบข้อมูลการเข้าสู่ระบบ<br>กรุณาล็อกอินใหม่อีกครั้ง</p>
+      <button class="retry-btn" onclick="goLogin()">กลับหน้าล็อกอิน</button>
     </div>
 
-    <div class="status-message">
-      <div class="dot-flash"></div>
-      กรุณารอสักครู่ ระบบกำลังนำท่านไปยังหน้าหลัก
-      <div class="dot-flash"></div>
-    </div>
-
-    <div class="glow-text">
-      <span></span> Secure Connection <span></span>
-    </div>
-    <div class="footer-note">Tokaisolidtire · IT Security</div>
+    <div class="footer-note">© 2026 Tokaisolidtire · IT Security</div>
   </div>
 
   <script>
-    (function() {
-      // **** กำหนดค่าต่าง ๆ (เหมือนเดิม) ****
-      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyxANn83IRyG0GoMNFKCdq8WXE0gYrWSK7elqwOrTqcFPdJ3-sWI-m4TS1FCUHiaB4e/exec";
-      const LOGIN_URL = "Login_Manager.html";
-      const TARGET_URL = "https://script.google.com/macros/s/AKfycbww-dXV5cjnV4GQiLl1B-xv5lf9HHF_tfXxL7QWEcK8tm0pjphnmi6BUzPtJtOXM0XB/exec?page=approve";
+  (function () {
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxuo3p-MB1jrYsFgpC37HIfqjkHQQqN9tpgjSXirAHTkj4YFfZnCdSm0KXsLCNVQs7z/exec";
+    const LOGIN_URL  = "Login_Manager.html";
+    const TARGET_URL = "https://script.google.com/macros/s/AKfycbww-dXV5cjnV4GQiLl1B-xv5lf9HHF_tfXxL7QWEcK8tm0pjphnmi6BUzPtJtOXM0XB/exec?page=approve";
 
-      // สร้างฟังก์ชัน redirect
-      function redirectToLogin() {
-        localStorage.clear();
-        window.location.replace(LOGIN_URL);
+    window.goLogin = function () {
+      localStorage.clear();
+      window.location.replace(LOGIN_URL);
+    };
+
+    function showError (msg) {
+      document.getElementById('stateLoading').style.display = 'none';
+      document.getElementById('stateError').style.display   = 'block';
+      if (msg) document.getElementById('errMsg').innerHTML = msg;
+    }
+
+    function markStep (stepId, state) {
+      const el = document.getElementById(stepId);
+      el.className = `step ${state}`;
+      if (state === 'done') {
+        el.querySelector('.step-indicator').innerHTML = '✓';
+      }
+    }
+
+    async function checkAuth () {
+      const token      = localStorage.getItem('authToken');
+      const expireTime = parseInt(localStorage.getItem('expireTime') || '0');
+
+      // Step 1: check local token
+      if (!token || !expireTime) {
+        showError('ไม่พบข้อมูล Session<br>กรุณาล็อกอินใหม่อีกครั้ง');
+        return;
       }
 
-      // ฟังก์ชันหลักตรวจสอบ
-      function checkAuth() {
-        const token = localStorage.getItem("authToken");
-        const expireTime = localStorage.getItem("expireTime");
+      if (Date.now() > expireTime) {
+        showError('Session หมดอายุแล้ว<br>กรุณาล็อกอินใหม่อีกครั้ง');
+        return;
+      }
 
-        if (!token || !expireTime || Date.now() > parseInt(expireTime, 10)) {
-          // ถ้า token หมดอายุหรือไม่มี ให้กระโดดไป login
-          redirectToLogin();
-          return;
+      // Step 2: verify with server
+      try {
+        const res  = await fetch(`${SCRIPT_URL}?action=verify&token=${encodeURIComponent(token)}`);
+        const data = await res.json();
+
+        console.log('Verify response:', data);
+
+        if (data.valid) {
+          markStep('step2', 'done');
+          markStep('step3', 'active');
+
+          // อัพเดต displayName ถ้า server ส่งมาใหม่
+          if (data.name) localStorage.setItem('displayName', data.name);
+          if (data.role) localStorage.setItem('role', data.role);
+
+          setTimeout(() => { window.location.replace(TARGET_URL); }, 600);
+        } else {
+          showError(data.reason
+            ? `${data.reason}<br>กรุณาล็อกอินใหม่อีกครั้ง`
+            : 'Token ไม่ถูกต้อง<br>กรุณาล็อกอินใหม่อีกครั้ง'
+          );
         }
-
-        // เรียก verify ผ่าน fetch
-        fetch(SCRIPT_URL + "?action=verify&token=" + encodeURIComponent(token))
-          .then(res => res.json())
-          .then(data => {
-            console.log("Verify response:", data);
-            if (data.valid) {
-              // ไปหน้าปลายทาง
-              window.location.replace(TARGET_URL);
-            } else {
-              redirectToLogin();
-            }
-          })
-          .catch(err => {
-            console.error("Verify error:", err);
-            redirectToLogin();
-          });
+      } catch (err) {
+        console.error('Verify error:', err);
+        showError('เกิดข้อผิดพลาดในการเชื่อมต่อ<br>กรุณาลองใหม่หรือล็อกอินใหม่');
       }
+    }
 
-      // เรียกทำงานเมื่อ DOM พร้อม
-      document.addEventListener("DOMContentLoaded", checkAuth);
-    })();
+    document.addEventListener('DOMContentLoaded', checkAuth);
+  })();
   </script>
 </body>
 </html>
