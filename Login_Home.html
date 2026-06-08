@@ -92,6 +92,7 @@
 
   <script>
     const SCRIPT_URL    = "https://script.google.com/macros/s/AKfycbzA6M5nQf36WQZyOQHGMrIK_sEf7LhiFDXprJGBPdEXXF9KDy9m0pli4fash7Gv82k/exec";
+    const SHEET_ID      = "1xadpjbQOM4DlpcAjQNuIgdVzLFdPI32xnGCRDMHZylw";
     const DASHBOARD_URL = "Approve_Home.html";
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -108,10 +109,24 @@
       setTimeout(() => { el.style.display = "none"; }, 8000);
     }
 
+    // ดึงชื่อ (คอลัมน์ E) จาก Google Sheets โดยใช้ code (คอลัมน์ A)
+    function fetchNameFromSheet(code) {
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=DATA`;
+      return fetch(url)
+        .then(r => r.text())
+        .then(txt => {
+          const json = JSON.parse(txt.substring(txt.indexOf('{'), txt.lastIndexOf('}') + 1));
+          const rows = json.table.rows;
+          const match = rows.find(row => (row.c[0]?.v ?? '').toString().trim() === code.trim());
+          return match ? (match.c[4]?.v ?? '').toString().trim() : '';
+        })
+        .catch(() => '');
+    }
+
     function login() {
-      const user    = document.forms["myform"]["uname"].value.trim();
-      const pass    = document.forms["myform"]["pass"].value.trim();
-      const msgEl   = document.getElementById("msg");
+      const user     = document.forms["myform"]["uname"].value.trim();
+      const pass     = document.forms["myform"]["pass"].value.trim();
+      const msgEl    = document.getElementById("msg");
       const loginBtn = document.querySelector('.login-button');
 
       msgEl.className = "message";
@@ -133,7 +148,6 @@
       loginBtn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> กำลังตรวจสอบ...";
       loginBtn.disabled = true;
 
-      // ✅ ใช้ GET แทน POST เพื่อแก้ปัญหา CORS
       const params = new URLSearchParams({ action: "login", uname: user, pass: pass });
       fetch(SCRIPT_URL + "?" + params.toString())
         .then(res => res.text())
@@ -154,10 +168,25 @@
             msgEl.style.display = "block";
             loginBtn.innerHTML = "<i class='fas fa-check'></i> สำเร็จ!";
             loginBtn.style.background = "linear-gradient(to right,#00cc00,#009900)";
+
+            // เก็บ username เสมอ
             localStorage.setItem("username", user);
             localStorage.setItem("authToken", user);
             localStorage.setItem("expireTime", Date.now() + 1000*60*30);
-            setTimeout(() => { window.open(DASHBOARD_URL, "_self"); }, 1500);
+
+            // ถ้า API ส่ง name กลับมาให้ใช้เลย ถ้าไม่มีให้ดึงจาก Sheets
+            const nameFromApi = (data.name || '').toString().trim();
+            if (nameFromApi) {
+              localStorage.setItem("userName", nameFromApi);
+              setTimeout(() => { window.open(DASHBOARD_URL, "_self"); }, 1500);
+            } else {
+              // fallback: ดึงชื่อจาก Sheets โดยตรง
+              fetchNameFromSheet(user).then(name => {
+                localStorage.setItem("userName", name || user);
+                setTimeout(() => { window.open(DASHBOARD_URL, "_self"); }, 1500);
+              });
+            }
+
           } else if (data.status === "denied") {
             msgEl.className = "message error";
             msgEl.innerHTML = "<i class='fas fa-ban'></i> " + (data.message || "บัญชีนี้ถูกระงับการใช้งาน");
