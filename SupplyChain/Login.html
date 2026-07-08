@@ -133,6 +133,7 @@
   <div id="loginView">
     <h1>เข้าสู่ระบบ</h1>
     <p class="sub">กรอกรหัสผู้ใช้เพื่อเข้าสู่ระบบ</p>
+    <p class="sub" style="margin:-18px 0 22px;">* ระบบต้องขอสิทธิ์ตำแหน่ง (GPS) เพื่อเข้าสู่ระบบ กรุณากด "อนุญาต" เมื่อเบราว์เซอร์ถาม</p>
 
     <label for="userInput">รหัสพนักงาน</label>
     <input id="userInput" type="text" placeholder="" autocomplete="off">
@@ -173,6 +174,41 @@
     if (savedUser) showStatus(savedUser);
   });
 
+  // ขอพิกัด GPS จากเบราว์เซอร์ผู้ใช้ — ระบบนี้ "บังคับ" ต้องได้พิกัดก่อนถึงจะ login/logout ได้
+  function getLocation(timeoutMs = 8000) {
+    return new Promise((resolve) => {
+      if (!navigator.geolocation) {
+        resolve({ lat: '', lng: '', error: 'unsupported' });
+        return;
+      }
+      const timer = setTimeout(() => resolve({ lat: '', lng: '', error: 'timeout' }), timeoutMs);
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          clearTimeout(timer);
+          resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude, error: null });
+        },
+        (err) => {
+          clearTimeout(timer);
+          resolve({ lat: '', lng: '', error: err.code === 1 ? 'denied' : 'unavailable' });
+        },
+        { enableHighAccuracy: true, timeout: timeoutMs, maximumAge: 0 }
+      );
+    });
+  }
+
+  function locationErrorText(errCode) {
+    switch (errCode) {
+      case 'denied':
+        return 'จำเป็นต้องอนุญาตการเข้าถึงตำแหน่ง (GPS) จึงจะใช้งานได้ กรุณาเปิดสิทธิ์ตำแหน่งของเบราว์เซอร์ให้เว็บนี้แล้วลองใหม่';
+      case 'unsupported':
+        return 'อุปกรณ์/เบราว์เซอร์นี้ไม่รองรับการระบุตำแหน่ง GPS จึงไม่สามารถเข้าสู่ระบบได้';
+      case 'timeout':
+        return 'ค้นหาตำแหน่ง GPS นานเกินไป กรุณาเปิด GPS/สัญญาณให้ชัดเจนแล้วลองใหม่';
+      default:
+        return 'ไม่สามารถระบุตำแหน่ง GPS ได้ กรุณาลองใหม่อีกครั้ง';
+    }
+  }
+
   async function login() {
     const user = userInput.value.trim();
     msg.textContent = '';
@@ -185,10 +221,22 @@
     }
 
     loginBtn.disabled = true;
+    loginBtn.textContent = 'กำลังขอตำแหน่ง GPS...';
+
+    const { lat, lng, error } = await getLocation();
+
+    if (error) {
+      msg.textContent = locationErrorText(error);
+      msg.className = 'msg error';
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'เข้าสู่ระบบ';
+      return;
+    }
+
     loginBtn.textContent = 'กำลังตรวจสอบ...';
 
     try {
-      const res = await fetch(`${API_URL}?action=login&user=${encodeURIComponent(user)}`);
+      const res = await fetch(`${API_URL}?action=login&user=${encodeURIComponent(user)}&lat=${lat}&lng=${lng}`);
       const data = await res.json();
 
       if (data.success) {
@@ -214,8 +262,19 @@
     const user = sessionStorage.getItem('loggedInUser');
     if (!user) return;
 
+    msg2.textContent = '';
+    msg2.className = 'msg';
+
+    const { lat, lng, error } = await getLocation();
+
+    if (error) {
+      msg2.textContent = locationErrorText(error);
+      msg2.className = 'msg error';
+      return;
+    }
+
     try {
-      await fetch(`${API_URL}?action=logout&user=${encodeURIComponent(user)}`);
+      await fetch(`${API_URL}?action=logout&user=${encodeURIComponent(user)}&lat=${lat}&lng=${lng}`);
     } catch (err) {
       // เงียบไว้ก็ได้ ผู้ใช้ไม่จำเป็นต้องเห็น error ตอน logout
     }
