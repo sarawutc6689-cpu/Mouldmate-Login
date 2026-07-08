@@ -21,12 +21,19 @@
     margin:0;
     min-height:100vh;
     display:flex;
+    flex-direction:column;
     align-items:center;
     justify-content:center;
     background:var(--bg);
     font-family:"Segoe UI", "Sarabun", system-ui, sans-serif;
     color:var(--text);
     padding:24px;
+  }
+  .hdr-logo{
+    display:block;
+    max-width:120px;
+    height:auto;
+    margin:0 auto 20px;
   }
   .card{
     width:100%;
@@ -105,9 +112,21 @@
     background:var(--success);
     margin-right:6px;
   }
+  .footer{
+    margin-top:28px;
+    text-align:center;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.7;
+  }
 </style>
 </head>
 <body>
+
+<img id="hdrLogo" class="hdr-logo" alt="โลโก้ Tokai"
+     src="https://lh3.googleusercontent.com/d/1g6UjqdgR1SZ8WWHI5pFA5fkeIRRTJtfr=w200"
+     data-alt="https://drive.google.com/thumbnail?id=1g6UjqdgR1SZ8WWHI5pFA5fkeIRRTJtfr&sz=w200"
+     onerror="this.onerror=null; this.src=this.dataset.alt;">
 
 <div class="card">
 
@@ -115,8 +134,8 @@
     <h1>เข้าสู่ระบบ</h1>
     <p class="sub">กรอกรหัสผู้ใช้เพื่อเข้าสู่ระบบ</p>
 
-    <label for="userInput">รหัสผู้ใช้</label>
-    <input id="userInput" type="text" placeholder="เช่น user001" autocomplete="off">
+    <label for="userInput">รหัสพนักงาน</label>
+    <input id="userInput" type="text" placeholder="" autocomplete="off">
 
     <button id="loginBtn" onclick="login()">เข้าสู่ระบบ</button>
 
@@ -132,9 +151,13 @@
 
 </div>
 
+<div class="footer">
+  ระบบรับของฝากกลับโรงงาน&nbsp;&nbsp;|&nbsp;&nbsp;© 2026&nbsp;&nbsp;|&nbsp;&nbsp;พัฒนาโดย Sarawut.C&nbsp;&nbsp;|&nbsp;&nbsp;ใช้สำหรับภายในองค์กรเท่านั้น
+</div>
+
 <script>
   // ⚠️ แก้ URL นี้เป็น URL ของ Apps Script Web App ที่ deploy แล้ว
-  const API_URL = "https://script.google.com/macros/s/AKfycbwDEzimuALk9v_7NFrazxp4bqqCJj-GcfRKHAAI7f-SJvn_1LHITVzEPMm8RrlPizRK/exec";
+  const API_URL = "https://script.google.com/macros/s/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/exec";
 
   const loginView = document.getElementById('loginView');
   const statusView = document.getElementById('statusView');
@@ -170,7 +193,10 @@
 
       if (data.success) {
         sessionStorage.setItem('loggedInUser', user);
-        showStatus(user);
+        msg.textContent = 'เข้าสู่ระบบสำเร็จ กำลังเปลี่ยนหน้า...';
+        msg.className = 'msg success';
+        window.location.href = "https://script.google.com/macros/s/AKfycbxSoVyc0rg7RXdPilUfHRZNuuSi8ssWsoFMr2lDwqL7DM_RjYdW0cIBRqT4tdQU2Nob/exec";
+        return;
       } else {
         msg.textContent = data.message || 'เข้าสู่ระบบไม่สำเร็จ';
         msg.className = 'msg error';
