@@ -6,14 +6,14 @@
 <title>เข้าสู่ระบบ</title>
 <style>
   :root{
-    --bg:#12161c;
-    --panel:#1b212b;
-    --border:#2a323f;
-    --text:#e7ebf0;
-    --muted:#8a94a3;
-    --accent:#4f8cff;
-    --accent-dim:#2e4b85;
-    --error:#ff6b6b;
+    --bg:#0c0808;
+    --panel:#1a1111;
+    --border:#3d1a1a;
+    --text:#f2e8e8;
+    --muted:#a68888;
+    --accent:#c8202e;
+    --accent-dim:#6e1219;
+    --error:#ff5a5a;
     --success:#4fd18c;
   }
   *{box-sizing:border-box;}
@@ -65,7 +65,7 @@
     padding:12px 14px;
     border-radius:8px;
     border:1px solid var(--border);
-    background:#11151b;
+    background:#140d0d;
     color:var(--text);
     font-size:15px;
     outline:none;
@@ -87,7 +87,7 @@
     cursor:pointer;
     transition:background .15s, opacity .15s;
   }
-  button:hover{background:#3d78e6;}
+  button:hover{background:#a81a26;}
   button:disabled{
     background:var(--accent-dim);
     cursor:not-allowed;
@@ -134,8 +134,8 @@
     <h1>เข้าสู่ระบบ</h1>
     <p class="sub">กรอกรหัสผู้ใช้เพื่อเข้าสู่ระบบ</p>
 
-    <label for="userInput">รหัสพนักงาน</label>
-    <input id="userInput" type="text" placeholder="" autocomplete="off">
+    <label for="userInput">รหัสผู้ใช้</label>
+    <input id="userInput" type="text" placeholder="เช่น user001" autocomplete="off">
 
     <button id="loginBtn" onclick="login()">เข้าสู่ระบบ</button>
 
