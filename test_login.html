@@ -1,781 +1,239 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบล็อกอินพนักงาน | TOKAI</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background: #0a0a0a;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* พื้นหลังเอฟเฟกต์ */
-        .bg-effect {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 20% 50%, rgba(245, 6, 2, 0.15) 0%, transparent 50%),
-                        radial-gradient(circle at 80% 20%, rgba(245, 6, 2, 0.1) 0%, transparent 50%),
-                        radial-gradient(circle at 40% 80%, rgba(245, 6, 2, 0.08) 0%, transparent 50%);
-            z-index: -1;
-        }
-
-        /* เอฟเฟกต์แสงลอย */
-        .glow-effect {
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, rgba(245, 6, 2, 0.2) 0%, transparent 70%);
-            border-radius: 50%;
-            z-index: -1;
-            animation: float 15s infinite ease-in-out;
-        }
-
-        .glow-effect:nth-child(1) {
-            top: 10%;
-            left: 10%;
-        }
-
-        .glow-effect:nth-child(2) {
-            bottom: 15%;
-            right: 10%;
-            animation-delay: -5s;
-        }
-
-        .glow-effect:nth-child(3) {
-            top: 50%;
-            left: 80%;
-            animation-delay: -10s;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(30px, -30px) scale(1.1); }
-            66% { transform: translate(-20px, 20px) scale(0.9); }
-        }
-
-        .container {
-            width: 100%;
-            max-width: 480px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-
-        .login-card {
-            background: rgba(20, 20, 20, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(245, 6, 2, 0.2),
-                        0 0 0 1px rgba(255, 255, 255, 0.05);
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .login-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 50px rgba(245, 6, 2, 0.3),
-                        0 0 0 1px rgba(255, 255, 255, 0.08);
-        }
-
-        .card-header {
-            background: linear-gradient(to right, #1a1a1a, #0a0a0a);
-            color: white;
-            padding: 30px 20px;
-            text-align: center;
-            position: relative;
-            border-bottom: 2px solid #F50602;
-        }
-
-        .logo-container {
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .logo {
-            max-width: 180px;
-            height: auto;
-            filter: drop-shadow(0 0 8px rgba(245, 6, 2, 0.5));
-            transition: transform 0.3s ease;
-        }
-
-        .logo:hover {
-            transform: scale(1.05);
-        }
-
-        .card-header h1 {
-            font-size: 26px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            letter-spacing: 1px;
-            background: linear-gradient(to right, #fff, #ff9999);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 15px rgba(245, 6, 2, 0.3);
-        }
-
-        .card-header p {
-            font-size: 15px;
-            opacity: 0.8;
-            font-weight: 300;
-            color: #ccc;
-        }
-
-        .card-body {
-            padding: 35px 30px;
-        }
-
-        .input-group {
-            margin-bottom: 25px;
-            position: relative;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 600;
-            color: #ddd;
-            font-size: 15px;
-            letter-spacing: 0.5px;
-        }
-
-        .input-group label i {
-            color: #F50602;
-            margin-right: 8px;
-        }
-
-        .input-field {
-            width: 100%;
-            padding: 16px 20px 16px 50px;
-            background: rgba(10, 10, 10, 0.7);
-            border: 2px solid #333;
-            border-radius: 12px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            color: #fff;
-        }
-
-        .input-field::placeholder {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .input-field:focus {
-            outline: none;
-            border-color: #F50602;
-            background: rgba(20, 20, 20, 0.9);
-            box-shadow: 0 0 0 3px rgba(245, 6, 2, 0.2);
-        }
-
-        .input-field.error {
-            border-color: #F50602;
-            animation: shake 0.5s ease;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-
-        .input-icon {
-            position: absolute;
-            left: 18px;
-            top: 42px;
-            color: #666;
-            font-size: 18px;
-            transition: color 0.3s ease;
-        }
-
-        .input-field:focus + .input-icon {
-            color: #F50602;
-        }
-
-        .password-toggle {
-            position: absolute;
-            right: 15px;
-            top: 42px;
-            color: #666;
-            cursor: pointer;
-            font-size: 18px;
-            transition: color 0.3s ease;
-            z-index: 10;
-        }
-
-        .password-toggle:hover {
-            color: #F50602;
-        }
-
-        .login-button {
-            width: 100%;
-            padding: 18px;
-            background: linear-gradient(to right, #F50602, #cc0502);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 15px;
-            box-shadow: 0 6px 20px rgba(245, 6, 2, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .login-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.7s ease;
-        }
-
-        .login-button:hover::before {
-            left: 100%;
-        }
-
-        .login-button:hover {
-            background: linear-gradient(to right, #ff1a1a, #dd0502);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(245, 6, 2, 0.5);
-        }
-
-        .login-button:active {
-            transform: translateY(0);
-        }
-
-        .login-button:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .login-button i {
-            font-size: 20px;
-        }
-
-        .message {
-            padding: 15px;
-            border-radius: 10px;
-            margin: 0 0 20px 0;
-            text-align: center;
-            font-weight: 600;
-            display: none;
-            border-left: 4px solid transparent;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .message.error {
-            background: rgba(245, 6, 2, 0.1);
-            color: #ff6666;
-            border-left-color: #F50602;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .message.success {
-            background: rgba(0, 200, 0, 0.1);
-            color: #66ff66;
-            border-left-color: #00cc00;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .message.info {
-            background: rgba(0, 100, 255, 0.1);
-            color: #66aaff;
-            border-left-color: #0088ff;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .message.warning {
-            background: rgba(255, 165, 0, 0.1);
-            color: #ffaa33;
-            border-left-color: #ff9900;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .message i {
-            font-size: 20px;
-        }
-
-        .forgot-link {
-            text-align: center;
-            margin-top: 25px;
-        }
-
-        .forgot-link a {
-            color: #999;
-            text-decoration: none;
-            font-size: 15px;
-            transition: color 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .forgot-link a:hover {
-            color: #F50602;
-            text-decoration: underline;
-        }
-
-        .card-footer {
-            background-color: rgba(15, 15, 15, 0.9);
-            padding: 20px;
-            text-align: center;
-            border-top: 1px solid #222;
-            color: #777;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .card-footer i {
-            color: #F50602;
-        }
-
-        .loading-spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .pulse-animation {
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { border-color: #333; }
-            50% { border-color: #F50602; }
-            100% { border-color: #333; }
-        }
-
-        @media (max-width: 480px) {
-            .card-body {
-                padding: 25px 20px;
-            }
-            
-            .container {
-                padding: 10px;
-            }
-            
-            .logo {
-                max-width: 150px;
-            }
-            
-            .card-header h1 {
-                font-size: 22px;
-            }
-            
-            .card-header p {
-                font-size: 13px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบล็อกอินพนักงาน | TOKAI</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+    body{background:#0a0a0a;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px;position:relative;overflow:hidden}
+    .bg-effect{position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 20% 50%,rgba(245,6,2,.15) 0%,transparent 50%),radial-gradient(circle at 80% 20%,rgba(245,6,2,.1) 0%,transparent 50%);z-index:-1}
+    .container{width:100%;max-width:480px;margin:0 auto}
+    .login-card{background:rgba(20,20,20,.95);border-radius:20px;box-shadow:0 10px 40px rgba(245,6,2,.2),0 0 0 1px rgba(255,255,255,.05);overflow:hidden;border:1px solid rgba(255,255,255,.05)}
+    .login-card:hover{transform:translateY(-5px);box-shadow:0 15px 50px rgba(245,6,2,.3)}
+    .card-header{background:linear-gradient(to right,#1a1a1a,#0a0a0a);color:white;padding:25px 20px;text-align:center;border-bottom:2px solid #F50602}
+    .logo-container{margin-bottom:15px;display:flex;justify-content:center}
+    .logo{max-width:180px;height:auto;filter:drop-shadow(0 0 8px rgba(245,6,2,.5))}
+    .card-header h1{font-size:26px;font-weight:700;margin-bottom:8px;background:linear-gradient(to right,#fff,#ff9999);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .card-header p{font-size:15px;opacity:.8;color:#ccc}
+    .card-body{padding:35px 30px}
+    .input-group{margin-bottom:25px;position:relative}
+    .input-group label{display:block;margin-bottom:10px;font-weight:600;color:#ddd;font-size:15px}
+    .input-field{width:100%;padding:16px 20px 16px 50px;background:rgba(10,10,10,.7);border:2px solid #333;border-radius:12px;font-size:16px;transition:all .3s;color:#fff}
+    .input-field::placeholder{color:#666}
+    .input-field:focus{outline:none;border-color:#F50602;box-shadow:0 0 0 3px rgba(245,6,2,.2)}
+    .input-icon{position:absolute;left:18px;top:42px;color:#666;font-size:18px}
+    .login-button{width:100%;padding:18px;background:linear-gradient(to right,#F50602,#cc0502);color:white;border:none;border-radius:12px;font-size:18px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;cursor:pointer;transition:all .3s;margin-top:15px;box-shadow:0 6px 20px rgba(245,6,2,.3);display:flex;align-items:center;justify-content:center;gap:10px;position:relative;overflow:hidden}
+    .login-button:hover{background:linear-gradient(to right,#ff1a1a,#dd0502);transform:translateY(-3px)}
+    .login-button:disabled{opacity:.7;cursor:not-allowed;transform:none}
+    .message{padding:15px;border-radius:10px;margin:20px 0;text-align:center;font-weight:600;display:none;border-left:4px solid transparent}
+    .message.error{background:rgba(245,6,2,.1);color:#ff6666;border-left-color:#F50602;display:block}
+    .message.success{background:rgba(0,200,0,.1);color:#66ff66;border-left-color:#00cc00;display:block}
+    .message.loading{background:rgba(0,100,255,.1);color:#66aaff;border-left-color:#0088ff;display:block}
+    .forgot-link{text-align:center;margin-top:25px}
+    .forgot-link a{color:#999;text-decoration:none;font-size:15px;transition:color .3s}
+    .forgot-link a:hover{color:#F50602;text-decoration:underline}
+    .card-footer{background:rgba(15,15,15,.9);padding:20px;text-align:center;border-top:1px solid #222;color:#777;font-size:14px;display:flex;align-items:center;justify-content:center;gap:10px}
+    .card-footer i{color:#F50602}
+    .pulse-animation{animation:pulse 1.5s infinite}
+    @keyframes pulse{0%{border-color:#333}50%{border-color:#F50602}100%{border-color:#333}}
+    .glow-effect{position:absolute;width:200px;height:200px;background:radial-gradient(circle,rgba(245,6,2,.2) 0%,transparent 70%);border-radius:50%;z-index:-1;animation:float 15s infinite ease-in-out}
+    .glow-effect:nth-child(1){top:10%;left:10%}
+    .glow-effect:nth-child(2){bottom:15%;right:10%;animation-delay:-5s}
+    .glow-effect:nth-child(3){top:50%;left:80%;animation-delay:-10s}
+    @keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-30px) scale(1.1)}66%{transform:translate(-20px,20px) scale(.9)}}
+    @media(max-width:480px){.card-body{padding:25px 20px}.logo{max-width:150px}.card-header h1{font-size:22px}}
+  </style>
 </head>
 <body>
-    <div class="bg-effect"></div>
-    <div class="glow-effect"></div>
-    <div class="glow-effect"></div>
-    <div class="glow-effect"></div>
+  <div class="bg-effect"></div>
+  <div class="glow-effect"></div><div class="glow-effect"></div><div class="glow-effect"></div>
 
-    <div class="container">
-        <div class="login-card">
-            <div class="card-header">
-                <div class="logo-container">
-                    <img src="https://sarawutc6689-cpu.github.io/Mouldmate-Login/logotokai.png" alt="TOKAI Logo" class="logo">
-                </div>
-                <h1>ระบบล็อกอินพนักงาน</h1>
-                <p>เฉพาะพนักงาน TOKAISOLIDTIRE ที่ลงทะเบียนเท่านั้น</p>
-            </div>
-
-            <div class="card-body">
-                <div id="message" class="message">
-                    <i class="fas" id="messageIcon"></i>
-                    <span id="messageText"></span>
-                </div>
-
-                <form id="loginForm" onsubmit="return false;">
-                    <div class="input-group">
-                        <label for="username">
-                            <i class="fas fa-id-card"></i> รหัสพนักงาน
-                        </label>
-                        <i class="fas fa-user input-icon"></i>
-                        <input 
-                            type="text" 
-                            class="input-field" 
-                            id="username" 
-                            name="username" 
-                            placeholder="กรอกรหัสพนักงาน 6 หลัก" 
-                            autocomplete="off"
-                            maxlength="6"
-                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                        >
-                    </div>
-
-                    <div class="input-group">
-                        <label for="password">
-                            <i class="fas fa-calendar-day"></i> วันที่เริ่มงาน
-                        </label>
-                        <i class="fas fa-calendar-alt input-icon"></i>
-                        <input 
-                            type="password" 
-                            class="input-field" 
-                            id="password" 
-                            name="password" 
-                            placeholder="กรอก DDMMYYYY (เช่น 21092561)" 
-                            autocomplete="off"
-                            maxlength="8"
-                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                        >
-                        <i class="fas fa-eye password-toggle" id="togglePassword" onclick="togglePassword()"></i>
-                    </div>
-
-                    <button type="button" class="login-button" id="loginBtn" onclick="handleLogin()">
-                        <i class="fas fa-sign-in-alt"></i>
-                        <span>เข้าสู่ระบบ</span>
-                    </button>
-
-                    <div class="forgot-link">
-                        <a href="#" onclick="showHelp(event)">
-                            <i class="fas fa-question-circle"></i>
-                            ขอความช่วยเหลือ / ลืมรหัสผ่าน
-                        </a>
-                    </div>
-                </form>
-            </div>
-
-            <div class="card-footer">
-                <i class="fas fa-shield-alt"></i>
-                <p>ระบบรักษาความปลอดภัย © 2026 | พัฒนาโดย Sarawut.C</p>
-                <i class="fas fa-shield-alt"></i>
-            </div>
+  <div class="container">
+    <div class="login-card">
+      <div class="card-header">
+        <div class="logo-container">
+          <img src="https://sarawutc6689-cpu.github.io/Mouldmate-Login/logotokai.png" alt="TOKAI Logo" class="logo">
         </div>
+        <h1>ระบบล็อกอินพนักงาน</h1>
+        <p>เฉพาะพนักงาน TOKAISOLIDTIRE ที่ลงทะเบียนเท่านั้น</p>
+      </div>
+
+      <div class="card-body">
+        <form name="myform" onsubmit="return false;">
+          <div class="input-group">
+            <label><i class="fas fa-id-card"></i> รหัสพนักงาน</label>
+            <div class="input-icon"><i class="fas fa-user"></i></div>
+            <input type="text" name="uname" id="uname" class="input-field" placeholder="กรุณากรอกรหัสพนักงาน" autocomplete="username">
+          </div>
+          <div class="input-group">
+            <label><i class="fas fa-calendar-day"></i> วันที่เริ่มงาน</label>
+            <div class="input-icon"><i class="fas fa-calendar-alt"></i></div>
+            <input type="password" name="pass" id="pass" class="input-field" placeholder="กรุณากรอกวันที่เริ่มงาน" autocomplete="current-password">
+          </div>
+          <div id="msg" class="message"></div>
+          <button type="button" class="login-button" onclick="login()">
+            <i class="fas fa-sign-in-alt"></i> เข้าสู่ระบบ
+          </button>
+          <div class="forgot-link">
+            <a href="#" onclick="showHelp()"><i class="fas fa-question-circle"></i> ขอความช่วยเหลือ</a>
+          </div>
+        </form>
+      </div>
+
+      <div class="card-footer">
+        <i class="fas fa-shield-alt"></i>
+        <p>ระบบรักษาความปลอดภัย © 2026 | พัฒนาโดย Sarawut.C</p>
+        <i class="fas fa-shield-alt"></i>
+      </div>
     </div>
+  </div>
 
-    <script>
-        // กำหนดค่าคงที่
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyfvFBibfe93NDEf8aRdAxHyTpqn1CQ0T7-5QimS_QcqZh8sCV_JcFfT722RDg7Pn8n/exec';
-        const DASHBOARD_URL = 'Approve_IT.html';
-        
-        let isLoggingIn = false;
+  <script>
+    const SCRIPT_URL    = "https://script.google.com/macros/s/AKfycbzA6M5nQf36WQZyOQHGMrIK_sEf7LhiFDXprJGBPdEXXF9KDy9m0pli4fash7Gv82k/exec";
+    const SHEET_ID      = "1xadpjbQOM4DlpcAjQNuIgdVzLFdPI32xnGCRDMHZylw";
+    const DASHBOARD_URL = "https://sarawutc6689-cpu.github.io/Mouldmate-Home/Home.html";
+    const FETCH_TIMEOUT_MS = 12000; // ตัดการรอถ้าเกิน 12 วินาที กันไม่ให้ค้างตลอดไป
 
-        // แสดง/ซ่อนรหัสผ่าน
-        function togglePassword() {
-            const passwordInput = document.getElementById('password');
-            const toggleIcon = document.getElementById('togglePassword');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleIcon.classList.remove('fa-eye');
-                toggleIcon.classList.add('fa-eye-slash');
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('pass').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') login();
+      });
+    });
+
+    function showHelp() {
+      const el = document.getElementById("msg");
+      el.className = "message loading";
+      el.innerHTML = "<i class='fas fa-info-circle'></i> รหัสพนักงาน: รหัสที่ได้รับจากบริษัท | วันที่เริ่มงาน: รูปแบบ DDMMYYYY | ลืมรหัสผ่านติดต่อฝ่าย HR";
+      el.style.display = "block";
+      setTimeout(() => { el.style.display = "none"; }, 8000);
+    }
+
+    // fetch ที่มี timeout ในตัว กัน "ค้างไปเลย" เมื่อ Google Apps Script ตอบช้าหรือไม่ตอบ
+    function fetchWithTimeout(url, ms) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), ms);
+      return fetch(url, { signal: controller.signal })
+        .finally(() => clearTimeout(timer));
+    }
+
+    // ดึงชื่อ (คอลัมน์ E) จาก Google Sheets โดยใช้ code (คอลัมน์ A)
+    function fetchNameFromSheet(code) {
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=DATA`;
+      return fetchWithTimeout(url, FETCH_TIMEOUT_MS)
+        .then(r => r.text())
+        .then(txt => {
+          const json = JSON.parse(txt.substring(txt.indexOf('{'), txt.lastIndexOf('}') + 1));
+          const rows = json.table.rows;
+          const match = rows.find(row => (row.c[0]?.v ?? '').toString().trim() === code.trim());
+          return match ? (match.c[4]?.v ?? '').toString().trim() : '';
+        })
+        .catch(() => '');
+    }
+
+    function resetButton(loginBtn, origBtn) {
+      loginBtn.innerHTML = origBtn;
+      loginBtn.disabled = false;
+    }
+
+    function login() {
+      const user     = document.forms["myform"]["uname"].value.trim();
+      const pass     = document.forms["myform"]["pass"].value.trim();
+      const msgEl    = document.getElementById("msg");
+      const loginBtn = document.querySelector('.login-button');
+
+      msgEl.className = "message";
+      msgEl.style.display = "none";
+
+      if (!user || !pass) {
+        msgEl.className = "message error";
+        msgEl.innerHTML = "<i class='fas fa-exclamation-circle'></i> กรุณากรอกข้อมูลให้ครบทุกช่อง";
+        msgEl.style.display = "block";
+        if (!user) { document.getElementById('uname').classList.add('pulse-animation'); setTimeout(()=>document.getElementById('uname').classList.remove('pulse-animation'),1500); }
+        if (!pass) { document.getElementById('pass').classList.add('pulse-animation'); setTimeout(()=>document.getElementById('pass').classList.remove('pulse-animation'),1500); }
+        return;
+      }
+
+      msgEl.className = "message loading";
+      msgEl.innerHTML = "<i class='fas fa-spinner fa-spin'></i> กำลังตรวจสอบข้อมูล กรุณารอสักครู่...";
+      msgEl.style.display = "block";
+      const origBtn = loginBtn.innerHTML;
+      loginBtn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> กำลังตรวจสอบ...";
+      loginBtn.disabled = true;
+
+      const params = new URLSearchParams({ action: "login", uname: user, pass: pass });
+
+      // ยิงคำขอตรวจสอบล็อกอิน "พร้อมกัน" กับคำขอดึงชื่อจาก Sheet ล่วงหน้า
+      // แทนที่จะรอ login เสร็จก่อนแล้วค่อยไปดึงชื่อทีหลัง (แบบเดิมคือรอ 2 รอบต่อกัน)
+      // วิธีนี้ลดเวลารอลงประมาณครึ่งหนึ่งเมื่อ API ไม่ได้ส่งชื่อกลับมาด้วย
+      const loginPromise = fetchWithTimeout(SCRIPT_URL + "?" + params.toString(), FETCH_TIMEOUT_MS).then(res => res.text());
+      const namePromise  = fetchNameFromSheet(user); // ไม่ผูกกับรหัสผ่าน จึงเริ่มดึงคู่ขนานได้เลย
+
+      loginPromise
+        .then(txt => {
+          console.log("Raw response:", txt);
+          let data;
+          try { data = JSON.parse(txt); } catch(e) {
+            msgEl.className = "message error";
+            msgEl.innerHTML = "<i class='fas fa-server'></i> การตอบกลับจากเซิร์ฟเวอร์ไม่ถูกต้อง กรุณาลองใหม่";
+            msgEl.style.display = "block";
+            resetButton(loginBtn, origBtn);
+            return;
+          }
+          console.log("Login API response:", data);
+
+          if (data.status === "success") {
+            msgEl.className = "message success";
+            msgEl.innerHTML = "<i class='fas fa-check-circle'></i> ล็อกอินสำเร็จ! กำลังนำท่านเข้าสู่ระบบ...";
+            msgEl.style.display = "block";
+            loginBtn.innerHTML = "<i class='fas fa-check'></i> สำเร็จ!";
+            loginBtn.style.background = "linear-gradient(to right,#00cc00,#009900)";
+
+            localStorage.setItem("username", user);
+            localStorage.setItem("authToken", user);
+            localStorage.setItem("expireTime", Date.now() + 1000*60*30);
+
+            const nameFromApi = (data.name || '').toString().trim();
+            if (nameFromApi) {
+              // API ส่งชื่อมาแล้ว ไม่ต้องรอ namePromise เลย เข้าระบบได้ทันที
+              localStorage.setItem("userName", nameFromApi);
+              window.open(DASHBOARD_URL, "_self");
             } else {
-                passwordInput.type = 'password';
-                toggleIcon.classList.remove('fa-eye-slash');
-                toggleIcon.classList.add('fa-eye');
-            }
-        }
-
-        // แสดงข้อความช่วยเหลือ
-        function showHelp(event) {
-            event.preventDefault();
-            showMessage('info', '📋 ข้อมูลการเข้าสู่ระบบ:\n\n1. รหัสพนักงาน: กรอกรหัสพนักงาน 6 หลัก\n2. วันที่เริ่มงาน: กรอก DDMMYYYY (เช่น 21092561)\n3. หากมีปัญหา กรุณาติดต่อฝ่ายทรัพยากรบุคคล');
-            
-            // ซ่อนข้อความอัตโนมัติหลังจาก 8 วินาที
-            setTimeout(() => {
-                document.getElementById('message').style.display = 'none';
-            }, 8000);
-        }
-
-        // แสดงข้อความ
-        function showMessage(type, text) {
-            const messageDiv = document.getElementById('message');
-            const messageIcon = document.getElementById('messageIcon');
-            const messageText = document.getElementById('messageText');
-            
-            messageDiv.className = `message ${type}`;
-            messageText.textContent = text;
-            
-            switch(type) {
-                case 'success':
-                    messageIcon.className = 'fas fa-check-circle';
-                    break;
-                case 'error':
-                    messageIcon.className = 'fas fa-exclamation-circle';
-                    break;
-                case 'warning':
-                    messageIcon.className = 'fas fa-exclamation-triangle';
-                    break;
-                default:
-                    messageIcon.className = 'fas fa-info-circle';
-            }
-        }
-
-        // ซ่อนข้อความ
-        function hideMessage() {
-            document.getElementById('message').style.display = 'none';
-        }
-
-        // ตรวจสอบความถูกต้อง
-        function validateInputs(username, password) {
-            if (!username || !password) {
-                showMessage('error', '⚠️ กรุณากรอกข้อมูลให้ครบทุกช่อง');
-                return false;
+              // ใช้ผลจาก namePromise ที่ยิงคู่ขนานไปแล้วตั้งแต่ต้น (ไม่ต้องรอใหม่)
+              namePromise.then(name => {
+                localStorage.setItem("userName", name || user);
+                window.open(DASHBOARD_URL, "_self");
+              });
             }
 
-            if (username.length !== 6) {
-                showMessage('error', '⚠️ รหัสพนักงานต้องมี 6 หลัก');
-                document.getElementById('username').classList.add('error');
-                setTimeout(() => {
-                    document.getElementById('username').classList.remove('error');
-                }, 500);
-                return false;
-            }
-
-            if (password.length !== 8) {
-                showMessage('error', '⚠️ วันที่เริ่มงานต้องมี 8 หลัก (DDMMYYYY)');
-                document.getElementById('password').classList.add('error');
-                setTimeout(() => {
-                    document.getElementById('password').classList.remove('error');
-                }, 500);
-                return false;
-            }
-
-            // ตรวจสอบรูปแบบวันที่เบื้องต้น
-            const day = parseInt(password.substring(0, 2));
-            const month = parseInt(password.substring(2, 4));
-            const year = parseInt(password.substring(4, 8));
-
-            if (day < 1 || day > 31 || month < 1 || month > 12 || year < 1900 || year > 2100) {
-                showMessage('error', '⚠️ รูปแบบวันที่ไม่ถูกต้อง (ต้องเป็น DDMMYYYY)');
-                document.getElementById('password').classList.add('error');
-                setTimeout(() => {
-                    document.getElementById('password').classList.remove('error');
-                }, 500);
-                return false;
-            }
-
-            return true;
-        }
-
-        // ฟังก์ชันหลักสำหรับ login
-        async function handleLogin() {
-            if (isLoggingIn) return;
-
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value.trim();
-            const loginBtn = document.getElementById('loginBtn');
-
-            if (!validateInputs(username, password)) {
-                return;
-            }
-
-            try {
-                isLoggingIn = true;
-                
-                // เปลี่ยนสถานะปุ่ม
-                loginBtn.disabled = true;
-                loginBtn.innerHTML = `
-                    <div class="loading-spinner"></div>
-                    <span>กำลังตรวจสอบ...</span>
-                `;
-
-                showMessage('info', '⏳ กำลังตรวจสอบข้อมูล กรุณารอสักครู่...');
-
-                // ใช้ fetch แทน iframe (ง่ายกว่า)
-                const formData = new URLSearchParams();
-                formData.append('uname', username);
-                formData.append('pass', password);
-                formData.append('action', 'login');
-
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'cors',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: formData.toString()
-                });
-
-                const responseText = await response.text();
-                console.log('Response:', responseText);
-
-                let data;
-                try {
-                    data = JSON.parse(responseText);
-                } catch (e) {
-                    console.error('JSON Parse Error:', e);
-                    throw new Error('การตอบกลับจากเซิร์ฟเวอร์ไม่ถูกต้อง');
-                }
-
-                console.log('Login Response:', data);
-
-                // ตรวจสอบผลลัพธ์
-                if (data.status === 'success') {
-                    showMessage('success', '✅ ' + (data.message || 'ล็อกอินสำเร็จ!'));
-                    
-                    // บันทึกข้อมูลลง localStorage
-                    localStorage.setItem('username', username);
-                    localStorage.setItem('authToken', username);
-                    localStorage.setItem('userName', data.name || username);
-                    localStorage.setItem('loginTime', Date.now().toString());
-                    localStorage.setItem('expireTime', (Date.now() + 30 * 60 * 1000).toString());
-
-                    // เปลี่ยนปุ่มเป็นสำเร็จ
-                    loginBtn.innerHTML = `
-                        <i class="fas fa-check-circle"></i>
-                        <span>สำเร็จ!</span>
-                    `;
-                    loginBtn.style.background = 'linear-gradient(to right, #00cc00, #009900)';
-
-                    // เปลี่ยนหน้า
-                    setTimeout(() => {
-                        window.location.href = DASHBOARD_URL;
-                    }, 1500);
-
-                } else if (data.status === 'denied') {
-                    showMessage('error', '❌ ' + (data.message || 'บัญชีนี้ถูกปฏิเสธการเข้าใช้งาน'));
-                    resetLoginButton();
-                } else if (data.status === 'fail') {
-                    showMessage('error', '❌ ' + (data.message || 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง'));
-                    
-                    // เพิ่ม effect การสั่น
-                    document.getElementById('username').classList.add('error');
-                    document.getElementById('password').classList.add('error');
-                    setTimeout(() => {
-                        document.getElementById('username').classList.remove('error');
-                        document.getElementById('password').classList.remove('error');
-                    }, 500);
-                    
-                    resetLoginButton();
-                } else {
-                    showMessage('error', '❌ เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
-                    resetLoginButton();
-                }
-
-            } catch (error) {
-                console.error('Login Error:', error);
-                
-                if (error.message.includes('Failed to fetch')) {
-                    showMessage('error', '⚠️ ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ กรุณาลองใหม่อีกครั้ง');
-                } else {
-                    showMessage('error', '⚠️ เกิดข้อผิดพลาด: ' + error.message);
-                }
-                
-                resetLoginButton();
-            } finally {
-                isLoggingIn = false;
-            }
-        }
-
-        // รีเซ็ตปุ่ม login
-        function resetLoginButton() {
-            const loginBtn = document.getElementById('loginBtn');
-            loginBtn.disabled = false;
-            loginBtn.innerHTML = `
-                <i class="fas fa-sign-in-alt"></i>
-                <span>เข้าสู่ระบบ</span>
-            `;
-            loginBtn.style.background = 'linear-gradient(to right, #F50602, #cc0502)';
-        }
-
-        // Event Listeners
-        document.addEventListener('DOMContentLoaded', function() {
-            // รองรับการกด Enter
-            document.getElementById('password').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    handleLogin();
-                }
-            });
-
-            // เคลียร์ error class เมื่อพิมพ์
-            document.getElementById('username').addEventListener('input', function() {
-                this.classList.remove('error');
-                hideMessage();
-            });
-
-            document.getElementById('password').addEventListener('input', function() {
-                this.classList.remove('error');
-                hideMessage();
-            });
-
-            // ตรวจสอบ session เดิม
-            const savedUsername = localStorage.getItem('username');
-            if (savedUsername) {
-                document.getElementById('username').value = savedUsername;
-                document.getElementById('password').focus();
-            }
-
-            // เพิ่ม animation ให้ input
-            const inputs = document.querySelectorAll('.input-field');
-            inputs.forEach(input => {
-                input.addEventListener('focus', function() {
-                    this.parentElement.querySelector('.input-icon').style.color = '#F50602';
-                });
-                
-                input.addEventListener('blur', function() {
-                    this.parentElement.querySelector('.input-icon').style.color = '#666';
-                });
-            });
+          } else if (data.status === "denied") {
+            msgEl.className = "message error";
+            msgEl.innerHTML = "<i class='fas fa-ban'></i> " + (data.message || "บัญชีนี้ถูกระงับการใช้งาน");
+            msgEl.style.display = "block";
+            resetButton(loginBtn, origBtn);
+          } else {
+            msgEl.className = "message error";
+            msgEl.innerHTML = "<i class='fas fa-exclamation-circle'></i> รหัสพนักงาน หรือวันที่เริ่มงานไม่ถูกต้อง";
+            msgEl.style.display = "block";
+            resetButton(loginBtn, origBtn);
+            document.getElementById('uname').classList.add('pulse-animation');
+            document.getElementById('pass').classList.add('pulse-animation');
+            setTimeout(()=>{document.getElementById('uname').classList.remove('pulse-animation');document.getElementById('pass').classList.remove('pulse-animation');},1500);
+          }
+        })
+        .catch(err => {
+          console.error("Login error:", err);
+          msgEl.className = "message error";
+          if (err.name === 'AbortError') {
+            msgEl.innerHTML = "<i class='fas fa-clock'></i> เซิร์ฟเวอร์ตอบสนองช้าเกินไป (เกิน " + (FETCH_TIMEOUT_MS/1000) + " วินาที) กรุณาลองใหม่อีกครั้ง";
+          } else {
+            msgEl.innerHTML = "<i class='fas fa-exclamation-triangle'></i> เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่";
+          }
+          msgEl.style.display = "block";
+          resetButton(loginBtn, origBtn);
         });
-    </script>
+    }
+  </script>
 </body>
 </html>
