@@ -7,9 +7,8 @@
 
 <!-- เปิดการเชื่อมต่อ (DNS + TLS) ล่วงหน้ากับโดเมนที่จะยิง request จริง
      เพื่อตัดเวลา handshake ออกจาก request แรกตอนกดล็อกอิน -->
-<link rel="preconnect" href="https://script.google.com" crossorigin>
-<link rel="dns-prefetch" href="https://script.google.com">
-<link rel="preconnect" href="https://sarawutc6689-cpu.github.io" crossorigin>
+<link rel="preconnect" href="https://dhgjbpvbbixipxksqqzu.supabase.co" crossorigin>
+<link rel="dns-prefetch" href="https://dhgjbpvbbixipxksqqzu.supabase.co">
 
 <style>
   /* ไม่พึ่ง external font / icon library (ตัด Font Awesome ทิ้ง) —
@@ -197,13 +196,18 @@
   <div class="foot">ระบบรักษาความปลอดภัย © 2026 · พัฒนาโดย Sarawut.C</div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
 (function(){
   "use strict";
 
-  const SCRIPT_URL    = "https://script.google.com/macros/s/AKfycbzA6M5nQf36WQZyOQHGMrIK_sEf7LhiFDXprJGBPdEXXF9KDy9m0pli4fash7Gv82k/exec";
+  const SUPABASE_URL  = "https://dhgjbpvbbixipxksqqzu.supabase.co";
+  const SUPABASE_KEY  = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRoZ2picHZiYml4aXB4a3NxcXp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU5OTIxMjgsImV4cCI6MjEwMTU2ODEyOH0.kZBAN01vbe8kENacfofZewHvxQBCCd2OaTFKbcFYlpM";
   const DASHBOARD_URL = "https://sarawutc6689-cpu.github.io/Mouldmate-Home/Home.html";
-  const TIMEOUT_MS     = 8000; // ตัดรอถ้าเกิน 8 วิ กันหน้าจอค้าง
+  const TIMEOUT_MS    = 8000; // ตัดรอถ้าเกิน 8 วิ กันหน้าจอค้าง
+
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   const form   = document.getElementById('f');
   const unameEl = document.getElementById('uname');
@@ -265,19 +269,18 @@
     setLoading(true);
     showMsg('wait', 'spinner', 'กำลังตรวจสอบข้อมูล...');
 
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+    // ทำ timeout เอง เพราะ supabase-js ไม่มี option timeout ตรงๆ
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject({ name: 'AbortError' }), TIMEOUT_MS)
+    );
 
-    const url = SCRIPT_URL + '?' + new URLSearchParams({ action:'login', uname:user, pass:pass });
-
-    fetch(url, { signal: controller.signal })
-      .then(r => r.text())
-      .then(txt => {
-        clearTimeout(timer);
-        let data;
-        try { data = JSON.parse(txt); }
-        catch(err){
-          showMsg('error', 'alert', 'การตอบกลับจากเซิร์ฟเวอร์ไม่ถูกต้อง กรุณาลองใหม่');
+    Promise.race([
+      supabase.rpc('login_employee', { p_code: user, p_pass: pass }),
+      timeoutPromise
+    ])
+      .then(({ data, error }) => {
+        if (error){
+          showMsg('error', 'alert', 'เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่');
           setLoading(false);
           return;
         }
@@ -289,8 +292,6 @@
           btn.style.background = '#1ea31e';
 
           // เก็บ session แล้วเปลี่ยนหน้าทันที ไม่หน่วงด้วย setTimeout ยาวๆ
-          // เหมือนเดิม (ก่อนหน้ารอ 1.5 วิเฉยๆ) — ใช้ requestAnimationFrame
-          // แค่ให้ browser วาดข้อความ "สำเร็จ" ให้เห็นก่อน 1 เฟรมแล้วไปต่อทันที
           localStorage.setItem('username', user);
           localStorage.setItem('authToken', user);
           localStorage.setItem('expireTime', Date.now() + 1000*60*30);
@@ -304,13 +305,12 @@
           showMsg('error', 'ban', data.message || 'บัญชีนี้ถูกระงับการใช้งาน');
           setLoading(false);
         } else {
-          showMsg('error', 'alert', 'รหัสพนักงาน หรือวันที่เริ่มงานไม่ถูกต้อง');
+          showMsg('error', 'alert', data.message || 'รหัสพนักงาน หรือวันที่เริ่มงานไม่ถูกต้อง');
           setLoading(false);
           shake(unameEl); shake(passEl);
         }
       })
       .catch(err => {
-        clearTimeout(timer);
         if (err.name === 'AbortError'){
           showMsg('error', 'clock', 'เซิร์ฟเวอร์ตอบสนองช้าเกินไป (เกิน ' + (TIMEOUT_MS/1000) + ' วินาที) กรุณาลองใหม่');
         } else {
