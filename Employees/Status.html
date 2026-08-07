@@ -103,7 +103,7 @@
 
 <div class="wrap">
   <header>
-    <h1>สถานะพนักงาน</h1>
+    <h1>พนักงานที่ออนไลน์อยู่ตอนนี้</h1>
     <div class="meta">
       <span class="live-dot"></span>
       <span id="last-update">กำลังโหลด...</span>
@@ -113,15 +113,7 @@
   <div class="summary">
     <div class="box online">
       <div class="num" id="count-online">-</div>
-      <div class="label">ออนไลน์</div>
-    </div>
-    <div class="box offline">
-      <div class="num" id="count-offline">-</div>
-      <div class="label">ออฟไลน์</div>
-    </div>
-    <div class="box">
-      <div class="num" id="count-total">-</div>
-      <div class="label">ทั้งหมด</div>
+      <div class="label">ออนไลน์อยู่ตอนนี้</div>
     </div>
   </div>
 
@@ -133,7 +125,6 @@
         <tr>
           <th>รหัสพนักงาน</th>
           <th>ชื่อ</th>
-          <th>สถานะ</th>
         </tr>
       </thead>
       <tbody id="tbody"></tbody>
@@ -159,8 +150,6 @@
   const lastUpdateEl = document.getElementById('last-update');
   const searchEl = document.getElementById('search');
   const countOnlineEl = document.getElementById('count-online');
-  const countOfflineEl = document.getElementById('count-offline');
-  const countTotalEl = document.getElementById('count-total');
 
   let allRows = [];
 
@@ -176,7 +165,7 @@
       tbl.style.display = 'none';
       stateEl.style.display = 'block';
       stateEl.className = 'empty';
-      stateEl.textContent = q ? 'ไม่พบข้อมูลที่ค้นหา' : 'ยังไม่มีข้อมูลพนักงาน';
+      stateEl.textContent = q ? 'ไม่พบข้อมูลที่ค้นหา' : 'ตอนนี้ไม่มีพนักงานออนไลน์อยู่';
       return;
     }
 
@@ -184,13 +173,9 @@
     stateEl.style.display = 'none';
 
     tbody.innerHTML = rows.map(r => {
-      const isOnline = r.status === 'Online';
       return '<tr>' +
         '<td>' + escapeHtml(r.employee_code) + '</td>' +
         '<td>' + escapeHtml(r.employee_name || '-') + '</td>' +
-        '<td><span class="badge ' + (isOnline ? 'online' : 'offline') + '">' +
-          '<span class="dot"></span>' + (isOnline ? 'ออนไลน์' : 'ออฟไลน์') +
-        '</span></td>' +
       '</tr>';
     }).join('');
   }
@@ -213,12 +198,9 @@
         return;
       }
 
-      allRows = data || [];
-
-      const onlineCount = allRows.filter(r => r.status === 'Online').length;
-      countOnlineEl.textContent = onlineCount;
-      countOfflineEl.textContent = allRows.length - onlineCount;
-      countTotalEl.textContent = allRows.length;
+      // แสดงเฉพาะพนักงานที่สถานะ Online เท่านั้น
+      allRows = (data || []).filter(r => r.status === 'Online');
+      countOnlineEl.textContent = allRows.length;
 
       render();
 
